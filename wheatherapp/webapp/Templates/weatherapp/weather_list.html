@@ -1,0 +1,78 @@
+<!-- weather_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather List</title>
+    <style>
+        /* Your CSS styles here */
+        .container {
+            margin: 20px auto;
+            width: 80%;
+            text-align: center;
+        }
+        .weather-list {
+            margin-top: 20px;
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+        }
+        .weather-list li {
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+        .weather-details {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather List</h1>
+        <ul class="weather-list" id="weatherList">
+            <!-- Weather data will be added dynamically -->
+        </ul>
+        <div class="weather-details" id="weatherDetail">
+            <!-- Weather detail will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/weather/')  // Adjust URL as per your Django URL configuration
+                .then(response => response.json())
+                .then(data => {
+                    const weatherList = document.getElementById('weatherList');
+                    const weatherDetail = document.getElementById('weatherDetail');
+                    
+                    data.forEach(weather => {
+                        const li = document.createElement('li');
+                        li.textContent = weather.city;
+                        li.addEventListener('click', () => {
+                            weatherDetail.innerHTML = `
+                                <h2>${weather.city}</h2>
+                                <p><strong>Temperature:</strong> ${weather.temperature} K</p>
+                                <p><strong>Weather:</strong> ${weather.weather_description}</p>
+                                <p><strong>Humidity:</strong> ${weather.humidity} %</p>
+                                <p><strong>Wind Speed:</strong> ${weather.wind_speed} m/s</p>
+                            `;
+                        });
+                        weatherList.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                });
+        });
+    </script>
+</body>
+</html>
